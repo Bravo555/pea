@@ -3,8 +3,13 @@
 #include <iostream>
 #include <cstdint>
 #include <queue>
+
 #include "lib.h"
 
+// a node used in the branch and bound solution
+// we do not keep old nodes and traverse up the tree to find a solution because
+// as far as i'm aware the priority queue doesn't let us do that, so we just
+// incorporate old nodes content into the new nodes
 struct Node {
     int cost;
     int node;
@@ -23,6 +28,8 @@ struct Node {
     {}
 };
 
+// reduce the matrix so that each row and column has at least one '0' or has no
+// valid elements (consists of all '-1's)
 int reduceMatrix(std::vector<int>& adjMatrix, int n) {
     int reductionsTotal = 0;
     std::vector<int> rowMinimums(n, INT32_MAX);
@@ -64,15 +71,22 @@ int reduceMatrix(std::vector<int>& adjMatrix, int n) {
     return reductionsTotal;
 }
 
-TspInstance tspBnb(const std::vector<int> adjMatrix, int n) {
+// Finds the branch and bound solution
+TspSolution tspBnb(const std::vector<int>& adjMatrix, int n) {
     int upper = INT32_MAX;
+
+    // we initialize the components of a root node
     std::vector<int> reducedMatrix(adjMatrix);
     std::vector<int> order;
     int reduction = reduceMatrix(reducedMatrix, n);
 
     // https://stackoverflow.com/questions/41053232/c-stdpriority-queue-uses-the-lambda-expression
     std::priority_queue<Node, std::vector<Node>,
-        decltype([](Node& lhs, Node& rhs) { return lhs.cost > rhs.cost; }
+        decltype([](Node& lhs, Node& rhs) {
+            // expand nodes that have smalles costs first, if the cost is equal,
+            // prioritise deeper nodes
+            return (lhs.cost > rhs.cost) || ((lhs.cost == rhs.cost) && (lhs.level < rhs.level));
+        }
     )> tree;
 
     // -1 means lack of parent
@@ -85,16 +99,18 @@ TspInstance tspBnb(const std::vector<int> adjMatrix, int n) {
 
         // cost estimate of next-shortest path is greater than one of our
         // completed paths, solution found
-        if(node.cost > upper) {
+        if(node.cost >= upper) {
             break;
         }
 
+        // if level = n - 1, then we reached the leaf node, update current best
+        // solution if cost is smaller than previous one
         if(node.level == n - 1 && node.cost < upper) {
             upper = node.cost;
             order = node.order;
         }
 
-        // expand level at that node
+        // expand level at that node, depth first fashion
         for(int j = 0; j < n; ++j) {
             if(node.adjMatrix[index(i, j, n)] == -1) {
                 continue;
@@ -107,34 +123,13 @@ TspInstance tspBnb(const std::vector<int> adjMatrix, int n) {
                 newMatrix[index(k, j, n)] = -1;
             }
             newMatrix[index(j, 0, n)] = -1;
-            std::cout << "Node: " << i << "->" << j << std::endl;
-            for(int i = 0; i < n; ++i) {
-                std::cout << "\t";
-                for(int j = 0; j < n; ++j) {
-                    std::cout << newMatrix[index(i, j, n)] << "\t";
-                }
-                std::cout << std::endl;
-            }
-            std::cout << std::endl;
+
             // reduce it
             int reduction = reduceMatrix(newMatrix, n);
-
-            std::cout << "Node after: " << i << "->" << j << std::endl;
-            for(int i = 0; i < n; ++i) {
-                std::cout << "\t";
-                for(int j = 0; j < n; ++j) {
-                    std::cout << newMatrix[index(i, j, n)] << "\t";
-                }
-                std::cout << std::endl;
-            }
 
             // cost of new node:
             // distance on the parent matrix + parent cost + child reduction
             int cost = node.adjMatrix[index(i, j, n)] + node.cost + reduction;
-            std::cout << node.adjMatrix[index(i, j, n)] << " "
-                << node.cost << " " << reduction << std::endl;
-            std::cout << "cost: " << cost << std::endl;
-            std::cout << std::endl;
 
             std::vector<int> currentOrder(node.order);
             currentOrder.push_back(j);
@@ -143,26 +138,7 @@ TspInstance tspBnb(const std::vector<int> adjMatrix, int n) {
             tree.emplace(cost, j, i, node.level + 1, newMatrix, currentOrder);
         }
     }
-
-    // while(!tree.empty()) {
-    //     Node node = tree.top();
-    //     tree.pop();
-    //     std::cout << "\tnode " << node.node << ", "
-    //         << "cost " << node.cost << " "
-    //         << "parent " << node.parent << " "
-    //         << "level " << node.level << std::endl;
-
-    //     for(int i = 0; i < n; ++i) {
-    //         std::cout << "\t";
-    //         for(int j = 0; j < n; ++j) {
-    //             std::cout << "\t" << node.adjMatrix[index(i, j, n)] << " ";
-    //         }
-    //         std::cout << std::endl;
-    //     }
-    //     std::cout << std::endl;
-    // }
-
     order.push_back(0);
 
-    return TspInstance{order, upper};
+    return TspSolution{order, upper};
 }
