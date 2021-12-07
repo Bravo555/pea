@@ -12,7 +12,9 @@
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
-            "environment": [],
+            "environment": [
+                { "name": "TMUX", "value": "1"}
+            ],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [

@@ -6,7 +6,7 @@
 #include "lib.h"
 
 // The function calculates the distance of the path for a given adjecency matrix
-int cycleDistance(const std::vector<int> adjMatrix, int n, const std::vector<int>& order) {
+int cycleDistance(const std::vector<int>& adjMatrix, int n, const std::vector<int>& order) {
     int sum = 0;
     size_t prevCity = order[0];
     for (size_t i = 1; i < order.size(); ++i) {

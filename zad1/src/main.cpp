@@ -9,16 +9,15 @@
 #include <sstream>
 
 #include "lib.h"
-#include "branch_and_bound.cpp"
-#include "dynamic_programming.cpp"
 #include "brute_force.cpp"
+#include "dynamic_programming.cpp"
+#include "branch_and_bound.cpp"
 
-const int INSTANCE_SIZE_MIN = 12;
-const int INSTANCE_SIZE_MAX = 20;
+const int INSTANCE_SIZE_MIN = 8;
+const int INSTANCE_SIZE_MAX = 22;
 const int REPETITIONS = 100;
 
-std::vector<int> genRandomInstance(int numberOfCities, std::mt19937& gen)
-{
+std::vector<int> genRandomInstance(int numberOfCities, std::mt19937& gen) {
     std::vector<int> adjMatrix(numberOfCities * numberOfCities);
     std::uniform_int_distribution<> distribution(1, 999);
     for (int i = 0; i < numberOfCities; i++) {
@@ -108,7 +107,7 @@ void testOnRandomData(const std::string& filename) {
     results << "N,Brute force,Branch and Bound,Dynamic Programming" << std::endl;
 
     auto testSuiteStart = std::chrono::system_clock::now();
-    for(int i = INSTANCE_SIZE_MIN; i < INSTANCE_SIZE_MAX; ++i) {
+    for(int i = INSTANCE_SIZE_MIN; i <= INSTANCE_SIZE_MAX; ++i) {
         results << i << ",";
 
         std::cout << "INSTANCE SIZE: " << i << std::endl;
@@ -121,12 +120,12 @@ void testOnRandomData(const std::string& filename) {
         auto start = std::chrono::system_clock::now();
         auto end = std::chrono::system_clock::now();
 
-        if(i <= 10) {
+        if(i <= 12) {
             start = std::chrono::system_clock::now();
             for(auto& instance: instances) {
                 tspBruteforce(instance, i);
             }
-            auto end = std::chrono::system_clock::now();
+            end = std::chrono::system_clock::now();
             int bfTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / REPETITIONS;
             std::cout << "\tbrute force: " << bfTime << "ms" << std::endl;
 
@@ -165,10 +164,24 @@ void testOnRandomData(const std::string& filename) {
 int main(int argc, char** argv) {
     std::random_device rd;
     std::mt19937 gen(0);
-    std::vector<int> instance = genRandomInstance(24, gen);
-    tspDp(instance, 24);
-    // tspBnb(instance, 24);
-    return 0;
+    // std::vector<int> instance = genRandomInstance(24, gen);
+    // TspSolution tDp = tspDp(instance, 24);
+    // TspSolution tBnb = tspBnb(instance, 24);
+
+
+    // for(auto c: tDp.order) {
+    //     std::cout << c << " ";
+    // }
+    // std::cout << std::endl;
+    // std::cout << "cost dp: " << tDp.cost << std::endl;
+
+    // for(auto c: tBnb.order) {
+    //     std::cout << c << " ";
+    // }
+    // std::cout << std::endl;
+    // std::cout << "cost bnb: " << tBnb.cost << std::endl;
+
+    // return 0;
 
     if (argc < 2) {
         std::cout << "random OUTPUT - generates instances and saves results to file OUTPUT" << std::endl;

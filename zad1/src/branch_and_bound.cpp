@@ -37,7 +37,7 @@ int reduceMatrix(std::vector<int>& adjMatrix, int n) {
     for(int i = 0; i < n; ++i) {
         for(int j = 0; j < n; ++j) {
             if(adjMatrix[index(i, j, n)] != -1 && adjMatrix[index(i, j, n)] < rowMinimums[i]) {
-                rowMinimums[i] = adjMatrix[index(i, j, n)];
+                rowMinimums.at(i) = adjMatrix[index(i, j, n)];
             }
         }
     }
@@ -46,7 +46,7 @@ int reduceMatrix(std::vector<int>& adjMatrix, int n) {
         if(rowMinimums[i] != INT32_MAX) reductionsTotal += rowMinimums[i];
         for(int j = 0; j < n; ++j) {
             if(adjMatrix[index(i, j, n)] != -1 && rowMinimums[i] != INT32_MAX) {
-                adjMatrix[index(i, j, n)] -= rowMinimums[i];
+                adjMatrix.at(index(i, j, n)) -= rowMinimums[i];
             }
         }
     }
@@ -56,7 +56,7 @@ int reduceMatrix(std::vector<int>& adjMatrix, int n) {
     for(int i = 0; i < n; ++i) {
         for(int j = 0; j < n; ++j) {
             if(adjMatrix[index(j, i, n)] != -1 && adjMatrix[index(j, i, n)] < columnMinimums[i])
-                columnMinimums[i] = adjMatrix[index(j, i, n)];
+                columnMinimums.at(i) = adjMatrix[index(j, i, n)];
         }
     }
 
@@ -64,7 +64,7 @@ int reduceMatrix(std::vector<int>& adjMatrix, int n) {
         if(columnMinimums[i] != INT32_MAX) reductionsTotal += columnMinimums[i];
         for(int j = 0; j < n; ++j) {
             if(adjMatrix[index(j, i, n)] != -1 && columnMinimums[i] != INT32_MAX)
-                adjMatrix[index(j, i, n)] -= columnMinimums[i];
+                adjMatrix.at(index(j, i, n)) -= columnMinimums[i];
         }
     }
 
@@ -119,10 +119,10 @@ TspSolution tspBnb(const std::vector<int>& adjMatrix, int n) {
             // prepare a matrix with excluded row i, column j, and ji
             std::vector<int> newMatrix(node.adjMatrix);
             for(int k = 0; k < n; ++k) {
-                newMatrix[index(i, k, n)] = -1;
-                newMatrix[index(k, j, n)] = -1;
+                newMatrix.at(index(i, k, n)) = -1;
+                newMatrix.at(index(k, j, n)) = -1;
             }
-            newMatrix[index(j, 0, n)] = -1;
+            newMatrix.at(index(j, 0, n)) = -1;
 
             // reduce it
             int reduction = reduceMatrix(newMatrix, n);

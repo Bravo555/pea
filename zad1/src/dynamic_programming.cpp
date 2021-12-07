@@ -42,7 +42,7 @@ bool setContains(int set, int node) {
 }
 
 // calculates the solution using the dynamic programming approach
-TspSolution tspDp(const std::vector<int> adjMatrix, const int n) {
+TspSolution tspDp(const std::vector<int>& adjMatrix, const int n) {
     int start = 0;
 
     // A 2D array that:
