@@ -1,0 +1,23 @@
+# started on Wed Dec  8 02:02:48 2021
+
+
+ Performance counter stats for './zad1.out 20':
+
+            642,04 msec task-clock:u              #    0,987 CPUs utilized          
+                 0      context-switches:u        #    0,000 /sec                   
+                 0      cpu-migrations:u          #    0,000 /sec                   
+            26 648      page-faults:u             #   41,505 K/sec                  
+     2 576 580 452      cycles:u                  #    4,013 GHz                      (82,52%)
+        61 252 972      stalled-cycles-frontend:u #    2,38% frontend cycles idle     (83,38%)
+       196 437 878      stalled-cycles-backend:u  #    7,62% backend cycles idle      (82,64%)
+     4 308 522 073      instructions:u            #    1,67  insn per cycle         
+                                                  #    0,05  stalled cycles per insn  (83,83%)
+     1 009 884 830      branches:u                #    1,573 G/sec                    (83,84%)
+        43 193 134      branch-misses:u           #    4,28% of all branches          (83,78%)
+
+       0,650465060 seconds time elapsed
+
+       0,627220000 seconds user
+       0,013287000 seconds sys
+
+
