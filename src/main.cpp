@@ -13,6 +13,7 @@
 #include "brute_force.cpp"
 #include "dynamic_programming.cpp"
 #include "branch_and_bound.cpp"
+#include "sa.cpp"
 
 const int INSTANCE_SIZE_MIN = 8;
 const int INSTANCE_SIZE_MAX = 20;
@@ -86,24 +87,40 @@ void testOnFile(const std::string& filename) {
     // }
     // std::cout << std::endl;
 
+    // time1 = std::chrono::system_clock::now();
+    // TspSolution tsp2 = tspBnb(adjMatrix, n);
+    // time2 = std::chrono::system_clock::now();
+
+    // std::cout << "BRANCH AND BOUND:" << std::endl;
+    // std::cout << "took: " << std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() << "us" << std::endl;
+    // std::cout << "Found minimum cost: " << tsp2.cost << std::endl;
+    // std::cout << "order: ";
+    // for(auto c: tsp2.order) {
+    //     std::cout << c << " ";
+    // }
+    // std::cout << std::endl;
+
+    // time1 = std::chrono::system_clock::now();
+    // TspSolution tsp3 = tspDp(adjMatrix, n);
+    // time2 = std::chrono::system_clock::now();
+
+    // std::cout << "DYNAMIC PROGRAMMING:" << std::endl;
+    // std::cout << "took: " << std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() << "us" << std::endl;
+    // std::cout << "Found minimum cost: " << tsp3.cost << std::endl;
+    // std::cout << "order: ";
+    // for(auto c: tsp3.order) {
+    //     std::cout << c << " ";
+    // }
+    // std::cout << std::endl;
+
+
+    Tsp tsp(adjMatrix, n);
+
     time1 = std::chrono::system_clock::now();
-    TspSolution tsp2 = tspBnb(adjMatrix, n);
+    TspSolution tsp3 = tspSa(tsp, 0);
     time2 = std::chrono::system_clock::now();
 
-    std::cout << "BRANCH AND BOUND:" << std::endl;
-    std::cout << "took: " << std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() << "us" << std::endl;
-    std::cout << "Found minimum cost: " << tsp2.cost << std::endl;
-    std::cout << "order: ";
-    for(auto c: tsp2.order) {
-        std::cout << c << " ";
-    }
-    std::cout << std::endl;
-
-    time1 = std::chrono::system_clock::now();
-    TspSolution tsp3 = tspDp(adjMatrix, n);
-    time2 = std::chrono::system_clock::now();
-
-    std::cout << "DYNAMIC PROGRAMMING:" << std::endl;
+    std::cout << "SIMULATED ANNEALING" << std::endl;
     std::cout << "took: " << std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() << "us" << std::endl;
     std::cout << "Found minimum cost: " << tsp3.cost << std::endl;
     std::cout << "order: ";
