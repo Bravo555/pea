@@ -11,5 +11,8 @@ filename = sys.argv[1]
 
 data = list(map(int, open(filename, 'r').read().splitlines()))
 
-plt.plot(data)
+plt.ylabel('temperatura')
+plt.xlabel('numer epoki')
+
+plt.plot(data, '.')
 plt.show()
